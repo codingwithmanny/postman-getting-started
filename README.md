@@ -31,3 +31,13 @@ pnpm db:seed;
 
 pnpm test:newman;
 ```
+
+---
+
+## Local Development
+
+```bash
+# FROM: ./
+
+pnpm dev;
+```
