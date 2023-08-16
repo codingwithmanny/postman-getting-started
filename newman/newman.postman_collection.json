@@ -1,0 +1,562 @@
+{
+	"info": {
+		"_postman_id": "5e224751-63e0-4750-b9fe-c802a1ef4e0b",
+		"name": "5 - Newman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17156625",
+		"_collection_link": "https://www.postman.com/codingwithmanny/workspace/postman-w-manny-workshop/collection/17156625-5e224751-63e0-4750-b9fe-c802a1ef4e0b?action=share&source=collection_link&creator=17156625"
+	},
+	"item": [
+		{
+			"name": "Todos",
+			"item": [
+				{
+					"name": "200",
+					"item": [
+						{
+							"name": "List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"JSON - data\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // data",
+											"    pm.expect(Array.isArray(jsonData.data)).to.eql(true);",
+											"    pm.expect(jsonData.data.length > 0).to.eql(true);",
+											"",
+											"    const { data } = jsonData;",
+											"});",
+											"",
+											"pm.test(\"JSON - data[0]\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // data[0]",
+											"    pm.expect(typeof data[0] === \"object\").to.eq(true);",
+											"    pm.expect(Object.keys(data[0]).length === 5).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data[0].id\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // id",
+											"    pm.expect(typeof data[0].id === \"string\").to.eq(true);",
+											"    pm.expect(data[0].id.length > 0).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data[0].task\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // task",
+											"    pm.expect(typeof data[0].task === \"string\").to.eq(true);",
+											"    pm.expect(data[0].task.length > 0).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data[0].isComplete\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // isComplete",
+											"    pm.expect(typeof data[0].isComplete === \"boolean\").to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data[0].createdAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // createdAt",
+											"    pm.expect(typeof data[0].createdAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"",
+											"pm.test(\"JSON - data[0].updatedAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // updatedAt",
+											"    pm.expect(typeof data[0].updatedAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/todos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const newTempTask = Math.random().toString(36).slice(2);",
+											"const newTempIsComplete = [true, false][Math.round(Math.random())];",
+											"",
+											"pm.environment.set(\"tempTodoTask\", newTempTask);",
+											"pm.environment.set(\"tempTodoIsComplete\", newTempIsComplete);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Tests",
+											"pm.test(\"JSON - data\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // data",
+											"    pm.expect(!Array.isArray(jsonData.data)).to.eql(true);",
+											"    pm.expect(Object.keys(jsonData.data).length > 0).to.eql(true);",
+											"",
+											"    const { data } = jsonData;",
+											"});",
+											"",
+											"pm.test(\"JSON - data.id\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // id",
+											"    pm.expect(typeof data.id === \"string\").to.eq(true);",
+											"    pm.expect(data.id.length > 0).to.eq(true);",
+											"",
+											"    // Set temp environment variable",
+											"    pm.environment.set(\"tempTodoId\", data.id);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.task\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // task",
+											"    pm.expect(typeof data.task === \"string\").to.eq(true);",
+											"    pm.expect(data.task === pm.environment.get(\"tempTodoTask\")).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.isComplete\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // isComplete",
+											"    pm.expect(typeof data.isComplete === \"boolean\").to.eq(true);",
+											"    pm.expect(data.isComplete === (pm.environment.get(\"tempTodoIsComplete\"))).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.createdAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // createdAt",
+											"    pm.expect(typeof data.createdAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.updatedAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // updatedAt",
+											"    pm.expect(typeof data.updatedAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task\": \"{{tempTodoTask}}\",\n    \"isComplete\": {{tempTodoIsComplete}}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/todos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"todos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Read",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Tests",
+											"pm.test(\"JSON - data\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // data",
+											"    pm.expect(!Array.isArray(jsonData.data)).to.eql(true);",
+											"    pm.expect(Object.keys(jsonData.data).length > 0).to.eql(true);",
+											"",
+											"    const { data } = jsonData;",
+											"});",
+											"",
+											"pm.test(\"JSON - data.id\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // id",
+											"    pm.expect(typeof data.id === \"string\").to.eq(true);",
+											"    pm.expect(data.id.length > 0).to.eq(true);",
+											"",
+											"    // Set temp environment variable",
+											"    pm.environment.set(\"tempTodoId\", data.id);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.task\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // task",
+											"    pm.expect(typeof data.task === \"string\").to.eq(true);",
+											"    pm.expect(data.task === pm.environment.get(\"tempTodoTask\")).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.isComplete\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // isComplete",
+											"    pm.expect(typeof data.isComplete === \"boolean\").to.eq(true);",
+											"    pm.expect(data.isComplete === (pm.environment.get(\"tempTodoIsComplete\"))).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.createdAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // createdAt",
+											"    pm.expect(typeof data.createdAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.updatedAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // updatedAt",
+											"    pm.expect(typeof data.updatedAt === \"string\").to.eq(true);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/todos/{{tempTodoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"todos",
+										"{{tempTodoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Tests",
+											"pm.test(\"JSON - data\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // data",
+											"    pm.expect(!Array.isArray(jsonData.data)).to.eql(true);",
+											"    pm.expect(Object.keys(jsonData.data).length > 0).to.eql(true);",
+											"",
+											"    const { data } = jsonData;",
+											"});",
+											"",
+											"pm.test(\"JSON - data.id\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // id",
+											"    pm.expect(typeof data.id === \"string\").to.eq(true);",
+											"    pm.expect(data.id.length > 0).to.eq(true);",
+											"",
+											"    // Set temp environment variable",
+											"    pm.environment.set(\"tempTodoId\", data.id);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.task\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // task",
+											"    pm.expect(typeof data.task === \"string\").to.eq(true);",
+											"    pm.expect(data.task === pm.environment.get(\"tempTodoTask\")).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.isComplete\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // isComplete",
+											"    pm.expect(typeof data.isComplete === \"boolean\").to.eq(true);",
+											"    pm.expect(data.isComplete === (pm.environment.get(\"tempTodoIsComplete\"))).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.createdAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // createdAt",
+											"    pm.expect(typeof data.createdAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.updatedAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // updatedAt",
+											"    pm.expect(typeof data.updatedAt === \"string\").to.eq(true);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const newTempTask = Math.random().toString(36).slice(2);",
+											"const newTempIsComplete = [true, false][Math.round(Math.random())];",
+											"",
+											"pm.environment.set(\"tempTodoTask\", newTempTask);",
+											"pm.environment.set(\"tempTodoIsComplete\", newTempIsComplete);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task\": \"{{tempTodoTask}}\",\n    \"isComplete\": {{tempTodoIsComplete}}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/todos/{{tempTodoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"todos",
+										"{{tempTodoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Tests",
+											"pm.test(\"JSON - data\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // data",
+											"    pm.expect(!Array.isArray(jsonData.data)).to.eql(true);",
+											"    pm.expect(Object.keys(jsonData.data).length > 0).to.eql(true);",
+											"",
+											"    const { data } = jsonData;",
+											"});",
+											"",
+											"pm.test(\"JSON - data.id\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // id",
+											"    pm.expect(typeof data.id === \"string\").to.eq(true);",
+											"    pm.expect(data.id.length > 0).to.eq(true);",
+											"",
+											"    // Set temp environment variable",
+											"    pm.environment.set(\"tempTodoId\", data.id);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.task\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // task",
+											"    pm.expect(typeof data.task === \"string\").to.eq(true);",
+											"    pm.expect(data.task === pm.environment.get(\"tempTodoTask\")).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.isComplete\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // isComplete",
+											"    pm.expect(typeof data.isComplete === \"boolean\").to.eq(true);",
+											"    pm.expect(data.isComplete === (pm.environment.get(\"tempTodoIsComplete\"))).to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.createdAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // createdAt",
+											"    pm.expect(typeof data.createdAt === \"string\").to.eq(true);",
+											"});",
+											"",
+											"pm.test(\"JSON - data.updatedAt\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const { data } = jsonData;",
+											"",
+											"    // updatedAt",
+											"    pm.expect(typeof data.updatedAt === \"string\").to.eq(true);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isComplete\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/todos/{{tempTodoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"todos",
+										"{{tempTodoId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			],
+			"description": "Interact with todos via api",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						]
+					}
+				}
+			]
+		}
+	]
+}
